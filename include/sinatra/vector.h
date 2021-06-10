@@ -13,13 +13,18 @@
 
 #include <stdlib.h>
 
+#define VECTOR_ARRAY_DATA(data) ( (char **) ((void *) data) )
+
 typedef struct {
-  char *data;
+  char **data;
   size_t ndim;
   size_t *dimensions;
-} vector_t;
+} vector_array_t;
 
-SINATRA_VECTOR_API void get_element(vector_t *vector, size_t *indicies, void **data, size_t data_size);
+
+SINATRA_VECTOR_API void get_vector(vector_array_t *vector, size_t *indicies, void ***data);
+
+SINATRA_VECTOR_API void get_element(vector_array_t *vector, size_t *indicies, void **data, size_t data_size);
 
 
 

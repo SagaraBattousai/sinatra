@@ -9,6 +9,9 @@ project(Sinatra
         DESCRIPTION "Sinatra ML Library"
         LANGUAGES C CXX)
 
+set(CMAKE_C_STANDARD 99)
+
+
 # ----------------------------------------------------------
 # Include modules
 # ----------------------------------------------------------
@@ -50,3 +53,12 @@ set(GENERATE_PYTHON_BINDINGS OFF CACHE BOOL
   "Whether or not to generate Python Language Bindings")
 
 add_subdirectory("modules")
+
+
+set(BUILD_TEST_APP OFF CACHE BOOL "Build test/example app to check code flow")
+
+add_optional_directory("app" ${BUILD_TEST_APP})
+
+
+
+

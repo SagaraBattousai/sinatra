@@ -2,28 +2,42 @@
 
 #include <sinatra/vector.h>
 
-void get_element(vector_t *vector, size_t *indicies, void **data, size_t data_size)
-{
-  const size_t ndim = vector->ndim;
-  const size_t *const dims = vector->dimensions;
 
-  size_t index = *(indicies + (ndim - 1));
-  if (ndim < 2)
-  {
-    return index;
-  }
+static size_t calculate_vector_index(size_t ndim, const size_t *const dims, const size_t *const indicies)
+{
+  //-2 as last dimension is the vector size so ignore it.
+  size_t dimension_index = ndim - 2;
+
+  size_t index = *(indicies + dimension_index);
 
   size_t jump = 1;
 
-  size_t i = ndim - 1;
-  while (i != 0)
+  while (dimension_index != 0)
   {
-    i--;
-    jump *= *(dims + i + 1);
-    index += *(indicies + i) * jump;
+    jump *= *(dims + dimension_index);
+
+    dimension_index--;
+
+    index += *(indicies + dimension_index) * jump;
   }
-  //data = (vector->data) + index;
-  void * k = (vector->data) + (index * data_size);
-  *data = k;// (vector->data) + index;
+
+  return index;
+}
+
+//ignore final dimension, use get_vector and then add to get elem
+void get_element(vector_array_t *vector, size_t *indicies, void **data, size_t data_size)
+{
+  char **vector_ptr;
+  get_vector(vector, indicies, &vector_ptr);
+
+  size_t last_index = *(indicies + vector->ndim - 1);
+  *data = (*vector_ptr) + (last_index * data_size);
+}
+
+void get_vector(vector_array_t *vector, size_t *indicies, void ***data)
+{
+  size_t index = calculate_vector_index(vector->ndim, vector->dimensions, indicies);
+
+  *data = (vector->data) + index;
 }
 
